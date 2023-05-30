@@ -6,29 +6,24 @@ from startup import Startup
 class Venture_Capitalist_Test(unittest.TestCase):
     def setUp(self) -> None:
         try:
-            startup = Startup(name="svb", founder="Greg Becker", domain="svb.com")
-            startup1 = Startup(name="ftx", founder="sbf", domain="ftx.com")
+            self.startup = Startup(name="svb", founder="Greg Becker", domain="svb.com")
+            self.startup1 = Startup(name="ftx", founder="sbf", domain="ftx.com")
         except Exception as e:
             print(e)
-        
-        try:
-            venture_capitalist_ryan = VentureCapitalist(name="Ryan", total_worth=3000000)
-            venture_capitalist_ren = VentureCapitalist(name="Ren", total_worth=3000000)
-            venture_capitalist_tres = VentureCapitalist(name="Historia", total_worth=2000000000)
-        except Exception as e:
-            print(e)
-        
+        self.venture_capitalist_ryan = VentureCapitalist(name="Ryan", total_worth=3000000)
+        self.venture_capitalist_ren = VentureCapitalist(name="Ren", total_worth=3000000)
+        self.venture_capitalist_tres = VentureCapitalist(name="Historia", total_worth=2000000000) 
         try:     
-            funding_round = FundingRound(venture_capitalist=venture_capitalist_ryan, 
-                                        startup=startup, 
+            self.funding_round = FundingRound(venture_capitalist=self.venture_capitalist_ryan, 
+                                        startup=self.startup, 
                                         type_="Angel",
                                         investement=5152512)
-            funding_round1 = FundingRound(venture_capitalist=venture_capitalist_ryan, 
-                                        startup=startup1, 
+            self.funding_round1 = FundingRound(venture_capitalist=self.venture_capitalist_ryan, 
+                                        startup=self.startup1, 
                                         type_="Series A",
                                         investement=481924.00)
-            funding_round2 = FundingRound(venture_capitalist=venture_capitalist_ren, 
-                                        startup=startup1, 
+            self.funding_round2 = FundingRound(venture_capitalist=self.venture_capitalist_ren, 
+                                        startup=self.startup1, 
                                         type_="Series C",
                                         investement=481924.123)
         except Exception as e:
@@ -43,10 +38,18 @@ class Venture_Capitalist_Test(unittest.TestCase):
     
     def test_has_name(self):
         self.assertEqual(self.venture_capitalist_ryan.name, "Ryan")
-        
+    
+    def test_name_is_str(self):
+        with self.assertRaises(Exception):
+            VentureCapitalist(name=3, total_worth=58134142)
+            
     def test_has_capital(self):
         self.assertEqual(self.venture_capitalist_ryan.total_worth, 3000000)
-        
+    
+    def test_total_worth_is_float(self):
+        with self.assertRaises(Exception):
+            self.venture_capitalist_ren.total_worth = "test"
+                
     def test_all_list(self):
         self.assertCountEqual([self.venture_capitalist_ryan, self.venture_capitalist_ren, self.venture_capitalist_tres], VentureCapitalist.all)
         

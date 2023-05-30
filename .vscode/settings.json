@@ -1,6 +1,5 @@
 {
     "python.testing.unittestArgs": [
-        "-m",
         "-v",
         "-s",
         "./lib",
