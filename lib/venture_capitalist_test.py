@@ -4,127 +4,70 @@ from venture_capitalist import VentureCapitalist
 from startup import Startup
 
 class Venture_Capitalist_Test(unittest.TestCase):
-    def test_has_name(self):
-        venture_capitalist = VentureCapitalist(name="Ryan")
-        self.assertEqual(venture_capitalist.name, "Ryan")
+    def setUp(self) -> None:
+        try:
+            startup = Startup(name="svb", founder="Greg Becker", domain="svb.com")
+            startup1 = Startup(name="ftx", founder="sbf", domain="ftx.com")
+        except Exception as e:
+            print(e)
+        
+        try:
+            venture_capitalist_ryan = VentureCapitalist(name="Ryan", total_worth=3000000)
+            venture_capitalist_ren = VentureCapitalist(name="Ren", total_worth=3000000)
+            venture_capitalist_tres = VentureCapitalist(name="Historia", total_worth=2000000000)
+        except Exception as e:
+            print(e)
+        
+        try:     
+            funding_round = FundingRound(venture_capitalist=venture_capitalist_ryan, 
+                                        startup=startup, 
+                                        type_="Angel",
+                                        investement=5152512)
+            funding_round1 = FundingRound(venture_capitalist=venture_capitalist_ryan, 
+                                        startup=startup1, 
+                                        type_="Series A",
+                                        investement=481924.00)
+            funding_round2 = FundingRound(venture_capitalist=venture_capitalist_ren, 
+                                        startup=startup1, 
+                                        type_="Series C",
+                                        investement=481924.123)
+        except Exception as e:
+            print(e)
+        return super().setUp()
+    
+    def tearDown(self) -> None:
         Startup.all = []
         VentureCapitalist.all = []
         FundingRound.all = []
+        return super().tearDown()
+    
+    def test_has_name(self):
+        self.assertEqual(self.venture_capitalist_ryan.name, "Ryan")
         
     def test_has_capital(self):
-        venture_capitalist = VentureCapitalist(total_worth=3000000)
-        self.assertEqual(venture_capitalist.total_worth, 3000000)
-        Startup.all = []
-        VentureCapitalist.all = []
-        FundingRound.all = []
+        self.assertEqual(self.venture_capitalist_ryan.total_worth, 3000000)
         
     def test_all_list(self):
-        venture_capitalist = VentureCapitalist(name="Ryan", total_worth=3000000)
-        venture_capitalist1 = VentureCapitalist(name="Ren", total_worth=3000000)
-        self.assertCountEqual([venture_capitalist, venture_capitalist1], VentureCapitalist.all)
-        Startup.all = []
-        VentureCapitalist.all = []
-        FundingRound.all = []
+        self.assertCountEqual([self.venture_capitalist_ryan, self.venture_capitalist_ren, self.venture_capitalist_tres], VentureCapitalist.all)
         
     def test_tres_commas_club(self):
-        venture_capitalist = VentureCapitalist(name="Ryan", total_worth=2000000000)
-        venture_capitalist1 = VentureCapitalist(name="Ren", total_worth=2000000000)
-        VentureCapitalist(name="Historia", total_worth=3000000)
-        self.assertCountEqual([venture_capitalist, venture_capitalist1], 
+        self.assertCountEqual([self.venture_capitalist_tres], 
                               VentureCapitalist.tres_commas_club())
-        Startup.all = []
-        VentureCapitalist.all = []
-        FundingRound.all = []
     
     def test_offer_contract(self):
-        startup = Startup(name="svb", founder="Greg Becker", domain="svb.com")
-        venture_capitalist = VentureCapitalist(name="Ryan", total_worth=2000000000)
-        venture_capitalist.offer_contract(startup=startup,
-                                          investement=481924.00,
-                                          type_="Angel")
-        self.assertIn(venture_capitalist, [venture.venture_capitalist for venture in FundingRound.all])
-        
-        Startup.all = []
-        VentureCapitalist.all = []
-        FundingRound.all = []
+        self.venture_capitalist_ryan.offer_contract(startup=self.startup,
+                                                    investement=481924.00,
+                                                    type_="Angel")
+        self.assertIn(self.venture_capitalist_ryan, [venture.venture_capitalist for venture in FundingRound.all])
     
     def test_funding_rounds(self):
-        startup = Startup(name="svb", founder="Greg Becker", domain="svb.com")
-        startup1 = Startup(name="ftx", founder="sbf", domain="ftx.com")
-        venture_capitalist = VentureCapitalist(name="Ryan", total_worth=3000000) 
-        venture_capitalist1 = VentureCapitalist(name="Ren", total_worth=3000000)
-        funding_round = FundingRound(venture_capitalist=venture_capitalist, 
-                                     startup=startup, 
-                                     type_="Angel",
-                                     investement=481924.123)
-        funding_round1 = FundingRound(venture_capitalist=venture_capitalist, 
-                                     startup=startup1, 
-                                     type_="Series A",
-                                     investement=481924.123)
-        funding_round2 = FundingRound(venture_capitalist=venture_capitalist1, 
-                                     startup=startup1, 
-                                     type_="Series A",
-                                     investement=481924.123)
-        
-        self.assertCountEqual([funding_round, funding_round1], venture_capitalist.funding_rounds())
-        
-        Startup.all = []
-        VentureCapitalist.all = []
-        FundingRound.all = []
+        self.assertCountEqual([self.funding_round, self.funding_round1], self.venture_capitalist_ryan.funding_rounds())
         
     def test_portfolio(self):
-        startup = Startup(name="svb", founder="Greg Becker", domain="svb.com")
-        startup1 = Startup(name="ftx", founder="sbf", domain="ftx.com")
-        venture_capitalist = VentureCapitalist(name="Ryan", total_worth=3000000) 
-        FundingRound(venture_capitalist=venture_capitalist, 
-                                     startup=startup, 
-                                     type_="Angel",
-                                     investement=481924.123)
-        FundingRound(venture_capitalist=venture_capitalist, 
-                                     startup=startup1, 
-                                     type_="Series A",
-                                     investement=481924.123)
-        FundingRound(venture_capitalist=venture_capitalist, 
-                                     startup=startup1, 
-                                     type_="Series C",
-                                     investement=481924.123)
-        
-        self.assertCountEqual([startup, startup1], venture_capitalist.portfolio())
+        self.assertCountEqual([self.startup, self.startup1], self.venture_capitalist_ryan.portfolio())
     
     def test_return_biggest_investement(self):
-        startup = Startup(name="svb", founder="Greg Becker", domain="svb.com")
-        startup1 = Startup(name="ftx", founder="sbf", domain="ftx.com")
-        venture_capitalist = VentureCapitalist(name="Ryan", total_worth=3000000) 
-        funding_round = FundingRound(venture_capitalist=venture_capitalist, 
-                                     startup=startup, 
-                                     type_="Angel",
-                                     investement=5152512)
-        funding_round1 = FundingRound(venture_capitalist=venture_capitalist, 
-                                     startup=startup1, 
-                                     type_="Series A",
-                                     investement=481924.00)
-        funding_round2 = FundingRound(venture_capitalist=venture_capitalist, 
-                                     startup=startup1, 
-                                     type_="Series C",
-                                     investement=481924.123)
-        
-        self.assertEqual(funding_round, venture_capitalist.biggest_investement())
+        self.assertEqual(self.funding_round, self.venture_capitalist_ryan.biggest_investement())
     
     def test_return_invested_domain(self):
-        startup = Startup(name="svb", founder="Greg Becker", domain="svb.com")
-        startup1 = Startup(name="ftx", founder="sbf", domain="ftx.com")
-        venture_capitalist = VentureCapitalist(name="Ryan", total_worth=3000000) 
-        FundingRound(venture_capitalist=venture_capitalist, 
-                                     startup=startup, 
-                                     type_="Angel",
-                                     investement=5152512)
-        FundingRound(venture_capitalist=venture_capitalist, 
-                                     startup=startup1, 
-                                     type_="Series A",
-                                     investement=481924.00)
-        FundingRound(venture_capitalist=venture_capitalist, 
-                                     startup=startup1, 
-                                     type_="Series C",
-                                     investement=481924.123)
-        
-        self.assertEqual(963848.123, venture_capitalist.invested("ftx.com"))
+        self.assertEqual(963848.00, self.venture_capitalist_ryan.invested("ftx.com"))

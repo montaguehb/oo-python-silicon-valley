@@ -3,4 +3,7 @@
 from funding_round import FundingRound
 
 class VentureCapitalist:
-    pass
+    all = []
+    def __init__(self, name):
+        self.name = name
+        VentureCapitalist.all.append(self)
