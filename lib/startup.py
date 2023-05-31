@@ -52,3 +52,22 @@ class Startup:
    @classmethod
    def domains(cls):
       return [startup.domain for startup in cls.all]
+   
+   def sign_contract(self, venture_capitalist, type_, investment):
+      FundingRound(startup=self, venture_capitalist=venture_capitalist, type_=type_, investment=investment)
+   
+   def num_funding_rounds(self):
+      return len([fr for fr in FundingRound.all if fr.startup == self])
+   
+   def total_funds(self):
+      return sum((fr.investment for fr in FundingRound.all if fr.startup == self))
+   
+   def investors(self):
+      investors = []
+      for fr in FundingRound.all:
+         if fr.startup == self and fr.venture_capitalist not in investors:
+            investors.append(fr.venture_capitalist)
+      return investors
+   
+   def big_investors(self):
+      return [vc for vc in self.investors() if vc.total_worth > 1000000000]  

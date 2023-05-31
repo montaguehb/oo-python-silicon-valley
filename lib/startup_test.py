@@ -8,24 +8,18 @@ class Startup_test(unittest.TestCase):
     def setUp(self) -> None:
         self.startup = Startup(name="svb", founder="Greg Becker", domain="svb.com")
         self.startup1 = Startup(name="ftx", founder="sbf", domain="ftx.com")
-        try:
-            self.venture_capitalist2 = VentureCapitalist(name="ren")
-            self.venture_capitalist = VentureCapitalist(name="Ren", total_worth=2000000000)
-            self.venture_capitalist1 = VentureCapitalist(name="Ryan", total_worth=3000000)
-        except Exception as e:
-            print(e)
-        try:
-            self.startup.sign_contract(venture_capitalist=self.venture_capitalist,
-                              type_="Angel",
-                              investement=481924.00)
-            self.startup.sign_contract(venture_capitalist=self.venture_capitalist,
-                                type_="Series A",
-                                investement=481924.00)
-            self.startup.sign_contract(venture_capitalist=self.venture_capitalist1,
-                                type_="Angel",
-                                investement=481924.00)
-        except Exception as e:
-            print(e)
+        self.venture_capitalist2 = VentureCapitalist(name="ren", total_worth=20000)
+        self.venture_capitalist = VentureCapitalist(name="Ren", total_worth=2000000000)
+        self.venture_capitalist1 = VentureCapitalist(name="Ryan", total_worth=3000000)
+        self.startup.sign_contract(venture_capitalist=self.venture_capitalist,
+                            type_="Angel",
+                            investment=481924.00)
+        self.startup1.sign_contract(venture_capitalist=self.venture_capitalist,
+                            type_="Series A",
+                            investment=481924.00)
+        self.startup.sign_contract(venture_capitalist=self.venture_capitalist1,
+                            type_="Angel",
+                            investment=481924.00)
         return super().setUp()
     
     def tearDown(self) -> None:
@@ -74,7 +68,7 @@ class Startup_test(unittest.TestCase):
         self.assertCountEqual(["svb.com", "ftx.com"], Startup.domains())
         
     def test_sign_contract(self):
-        self.assertIn(self.startup, FundingRound.all)
+        self.assertIn(self.startup, [fr.startup for fr in FundingRound.all])
 
                
     def test_returns_num_rounds(self):
@@ -88,4 +82,4 @@ class Startup_test(unittest.TestCase):
         
     def test_returns_big_investors(self):
         self.assertCountEqual([self.venture_capitalist], self.startup.big_investors())
-        
+    

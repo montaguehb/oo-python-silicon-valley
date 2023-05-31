@@ -34,3 +34,26 @@ class VentureCapitalist:
     @classmethod
     def tres_commas_club(cls):
         return [investor for investor in cls.all if investor.total_worth >= 1000000000]
+    
+    def offer_contract(self, startup, type_, investment):
+        FundingRound(startup=startup, venture_capitalist=self, type_=type_, investment=investment)
+        
+    def funding_rounds(self):
+        return [fr for fr in FundingRound.all if fr.venture_capitalist == self]
+    
+    def portfolio(self):
+        startups = []
+        for fr in self.funding_rounds():
+            if(fr.startup not in startups and fr.venture_capitalist == self):
+                startups.append(fr.startup)
+        return startups
+    
+    def biggest_investment(self):
+        largest = None
+        for fr in self.funding_rounds():
+            if largest is None or fr.investment > largest.investment:
+                largest = fr
+        return largest
+    
+    def invested(self, domain):
+        return sum((fr.investment for fr in self.funding_rounds() if fr.startup.domain == domain))

@@ -27,7 +27,7 @@ class Founding_Round_Test(unittest.TestCase):
     
     def test_has_startup(self):
         self.assertEqual(self.startup, self.funding_round.startup)
-            
+           
     def test_startup_is_immutable(self):
         with self.assertRaises(Exception):
             self.funding_round.startup = Startup(name="ftx", founder="sbf", domain="ftx.com")
